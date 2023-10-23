@@ -16,9 +16,52 @@ var headerElement = React.createElement(
         "Hello From React!"
     ),
     React.createElement(
-        "h2",
+        "main",
         null,
-        "Slogan here"
+        React.createElement(
+            "nav",
+            null,
+            React.createElement(
+                "ul",
+                null,
+                React.createElement(
+                    "li",
+                    null,
+                    React.createElement(
+                        "a",
+                        { href: "#" },
+                        "Home"
+                    )
+                ),
+                React.createElement(
+                    "li",
+                    null,
+                    React.createElement(
+                        "a",
+                        { href: "#" },
+                        "About"
+                    )
+                ),
+                React.createElement(
+                    "li",
+                    null,
+                    React.createElement(
+                        "a",
+                        { href: "#" },
+                        "Contacts"
+                    )
+                )
+            )
+        )
+    ),
+    React.createElement(
+        "footer",
+        null,
+        React.createElement(
+            "p",
+            null,
+            "All Rights reserved!"
+        )
     )
 );
 

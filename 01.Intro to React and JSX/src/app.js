@@ -10,9 +10,20 @@
 const headerElement = (
     <header>
         <h1>Hello From React!</h1>
-        <h2>Slogan here</h2>
-        
+        <main>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contacts</a></li>
+                </ul>
+            </nav>
+        </main>
+        <footer>
+            <p>All Rights reserved!</p>
+        </footer>
     </header>
+    
 )
 
 root.render(headerElement);
