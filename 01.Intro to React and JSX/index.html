@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin=""></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin=""></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <title>React JS</title>
   </head>
   <body>
@@ -14,7 +14,13 @@
 
     <script>
         const rootElement = document.getElementById('root');
-        // console.dir(rootElement);
+        console.dir(rootElement);
+        const root = ReactDOM.createRoot(rootElement);
+
+        const headerElement = React.createElement('h1', {}, 'Hello From React!');
+        console.log(JSON.parse(JSON.stringify(headerElement)));
+
+        root.render(headerElement);
     </script>
 
   </body>
