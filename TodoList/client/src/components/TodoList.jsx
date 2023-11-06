@@ -1,12 +1,15 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import TodoItem from "./TodoItem";
 
 export default function TodoList() {
+
+    const [todos, setTodos] = useState([]);
     
     useEffect(() => {
         fetch(`http://localhost:3030/jsonstore/todos`)
-        .then(response => response.json)
+        .then(response => response.json())
         .then(data => {
-            console.log(data)
+            setTodos(Object.values(data));
         })
         .catch(err => console.log(err))
     }, [])
@@ -36,8 +39,13 @@ export default function TodoList() {
                 </tr>
             </thead>
             <tbody>
-
-                asdasda
+                {todos.map(todo => (
+                    <TodoItem
+                        key={todo._id}
+                        text={todo.text}
+                        isCompleted={todo.isCompleted}
+                    />
+                    ))}
             </tbody>
             </table>
         </div>
