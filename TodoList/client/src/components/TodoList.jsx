@@ -1,4 +1,16 @@
+import { useEffect } from "react"
+
 export default function TodoList() {
+    
+    useEffect(() => {
+        fetch(`http://localhost:3030/jsonstore/todos`)
+        .then(response => response.json)
+        .then(data => {
+            console.log(data)
+        })
+        .catch(err => console.log(err))
+    }, [])
+    
     return(
         <section className="todo-list-container">
         <h1>Todo List</h1>
