@@ -1,21 +1,46 @@
 import UserListItem from "./UserListItem";
 import { useEffect, useState } from "react";
 import * as userService from "../services/userService";
+import CreateUserModal from "./createUserModal";
 
 const UserListTable = () => {
 
     const [users, setUsers] = useState([]);
-
-    console.log(users)
+    const [showCreate, setShowCreate] = useState(false);
 
     useEffect(() => {
         userService.getAll()
-        .then(result => setUsers(result));
+        .then(result => setUsers(result))
+        .catch(error => console.log(error));
     }, []);
 
+    const createUserClickHandler = () => {
+        setShowCreate(true);
+    };
+
+    const hideCreateModal = () => {
+        setShowCreate(false);
+    }
+
+    const userCreateHandler = async (e) => {
+        e.preventDefault();
+        
+        const data = Object.fromEntries(new FormData(e.currentTarget))
+        const result = await userService.create(data);
+        setShowCreate(false);
+
+    };
 
   return (
     <div className="table-wrapper">
+
+            {showCreate && (
+                <CreateUserModal 
+                onClose={hideCreateModal}
+                onUserCreate={userCreateHandler}
+              />
+             )}
+
       <table className="table">
         <thead>
           <tr>
@@ -114,9 +139,22 @@ const UserListTable = () => {
           </tr>
         </thead>
         <tbody>
-            <UserListItem />
+                {users.map(user => (
+                    <UserListItem
+                        key={user._id}
+                        createdAt={user.createdAt}
+                        email={user.email}
+                        firstName={user.firstName}
+                        lastName={user.lastName}
+                        phoneNumber={user.phoneNumber}
+                    />
+                ))}
+
         </tbody>
       </table>
+
+            <button className="btn-add btn" onClick={createUserClickHandler}>Add new user</button>        
+
     </div>
   );
 };
