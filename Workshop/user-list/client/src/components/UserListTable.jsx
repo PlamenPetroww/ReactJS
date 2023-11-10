@@ -6,79 +6,85 @@ import UserInfoModal from "./UserInfoModal";
 import UserDeleteModal from "./UserDeleteModal";
 
 const UserListTable = () => {
+  const [users, setUsers] = useState([]);
+  const [showCreate, setShowCreate] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
-    const [users, setUsers] = useState([]);
-    const [showCreate, setShowCreate] = useState(false);
-    const [showInfo, setShowInfo] = useState(false);
-    const [showDelete, setShowDelete] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
+  useEffect(() => {
+    userService
+      .getAll()
+      .then((result) => setUsers(result))
+      .catch((error) => console.log(error));
+  }, []);
 
-    useEffect(() => {
-        userService.getAll()
-        .then(result => setUsers(result))
-        .catch(error => console.log(error));
-    }, []);
+  const createUserClickHandler = () => {
+    setShowCreate(true);
+  };
 
-    const createUserClickHandler = () => {
-        setShowCreate(true);
-    };
+  const hideCreateModal = () => {
+    setShowCreate(false);
+  };
 
-    const hideCreateModal = () => {
-        setShowCreate(false);
+  const userCreateHandler = async (e) => {
+    e.preventDefault();
+
+    const data = Object.fromEntries(new FormData(e.currentTarget));
+    const newUser = await userService.create(data);
+    setUsers((state) => [...state, newUser]);
+    setShowCreate(false);
+  };
+
+  const userInfoClickHandler = async () => {
+    setSelectedUser(userId);
+    setShowInfo(true);
+  };
+
+  // Show delete modal after click at the delete button
+  const deleteUserClickHandler = (userId) => {
+    setSelectedUser(userId);
+    setShowDelete(true);
+  };
+
+  // After click at the delete button and make request Delete
+  const deleteUserHandler = async () => {
+    try {
+      // Remove user from server
+      await userService.remove(selectedUser);
+
+      // Remove user from state
+      setUsers((state) => state.filter((user) => user._id !== selectedUser));
+    } catch (error) {
+      // Fetch error
+      console.log(error);
     }
-
-    const userCreateHandler = async (e) => {
-        e.preventDefault();
-        
-        const data = Object.fromEntries(new FormData(e.currentTarget))
-        const newUser = await userService.create(data);
-        setUsers(state => [...state, newUser])
-        setShowCreate(false);
-
-    };
-
-    const userInfoClickHandler = async () => {
-        setSelectedUser(userId);
-        setShowInfo(true);
-    };
-
-    const deleteUserClickHandler = (userId) => {
-        setSelectedUser(userId);
-        setShowDelete(true);
-    }
-
-    const deleteUserHandler = async () => {
-        // Remove user from server
-        const result = await userService.remove(selectedUser);
-
-        // Remove user from state
-        setUsers(state => state.filter(user => user._id !== selectedUser))
-
-        // Close the delete modal
-        setShowDelete(false);
-    }
+    // Close the delete modal
+    setShowDelete(false);
+  };
 
   return (
     <div className="table-wrapper">
+      {showCreate && (
+        <CreateUserModal
+          onClose={hideCreateModal}
+          onCreate={userCreateHandler}
+        />
+      )}
 
-            {showCreate && (
-                <CreateUserModal 
-                onClose={hideCreateModal}
-                onCreate={userCreateHandler}
-              />
-             )}
+      {showInfo && (
+        <UserInfoModal
+          onClose={() => setShowInfo(false)}
+          userId={selectedUser}
+        />
+      )}
 
-            {showInfo && (
-            <UserInfoModal
-            onClose={() => setShowInfo(false)}
-            userId = {selectedUser}
-             />)}
-
-            {showDelete && (
-            <UserDeleteModal
-            onClose={() => setShowDelete(false)}
-            onDelete={deleteUserHandler}
-            />)}
+      {showDelete && (
+        <UserDeleteModal
+          onClose={() => setShowDelete(false)}
+          onDelete={deleteUserHandler}
+        />
+      )}
 
       <table className="table">
         <thead>
@@ -178,25 +184,25 @@ const UserListTable = () => {
           </tr>
         </thead>
         <tbody>
-                {users.map(user => (
-                    <UserListItem
-                        key={user._id}
-                        userId={user._id}
-                        createdAt={user.createdAt}
-                        email={user.email}
-                        firstName={user.firstName}
-                        lastName={user.lastName}
-                        phoneNumber={user.phoneNumber}
-                        onInfoClick={userInfoClickHandler}
-                        onDeleteClick={deleteUserClickHandler}
-                    />
-                ))}
-
+          {users.map((user) => (
+            <UserListItem
+              key={user._id}
+              userId={user._id}
+              createdAt={user.createdAt}
+              email={user.email}
+              firstName={user.firstName}
+              lastName={user.lastName}
+              phoneNumber={user.phoneNumber}
+              onInfoClick={userInfoClickHandler}
+              onDeleteClick={deleteUserClickHandler}
+            />
+          ))}
         </tbody>
       </table>
 
-            <button className="btn-add btn" onClick={createUserClickHandler}>Add new user</button>        
-
+      <button className="btn-add btn" onClick={createUserClickHandler}>
+        Add new user
+      </button>
     </div>
   );
 };
