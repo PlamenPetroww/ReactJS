@@ -55,12 +55,13 @@ const UserListTable = () => {
 
       // Remove user from state
       setUsers((state) => state.filter((user) => user._id !== selectedUser));
-    } catch (error) {
-      // Fetch error
-      console.log(error);
+    } catch {
+      // Show message
+        
     }
-    // Close the delete modal
     setShowDelete(false);
+    // Close the delete modal
+    alert(`The user was deleted!`);
   };
 
   return (
