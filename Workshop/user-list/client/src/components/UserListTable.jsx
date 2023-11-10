@@ -2,11 +2,13 @@ import UserListItem from "./UserListItem";
 import { useEffect, useState } from "react";
 import * as userService from "../services/userService";
 import CreateUserModal from "./createUserModal";
+import UserInfoModal from "./UserInfoModal";
 
 const UserListTable = () => {
 
     const [users, setUsers] = useState([]);
     const [showCreate, setShowCreate] = useState(false);
+    const [showInfo, setShowInfo] = useState(false);
 
     useEffect(() => {
         userService.getAll()
@@ -26,20 +28,28 @@ const UserListTable = () => {
         e.preventDefault();
         
         const data = Object.fromEntries(new FormData(e.currentTarget))
-        const result = await userService.create(data);
+        const newUser = await userService.create(data);
+        setUsers(state => [...state, newUser])
         setShowCreate(false);
 
     };
 
+    const userInfoClickHandler = async (userId) => {
+        const userDetails = await userService.getOne(userId);
+
+        console.log(userDetails);
+    };
   return (
     <div className="table-wrapper">
 
             {showCreate && (
                 <CreateUserModal 
                 onClose={hideCreateModal}
-                onUserCreate={userCreateHandler}
+                onCreate={userCreateHandler}
               />
              )}
+
+             {showInfo && <UserInfoModal  onClose={() => setShowInfo(false)} />}
 
       <table className="table">
         <thead>
@@ -142,11 +152,13 @@ const UserListTable = () => {
                 {users.map(user => (
                     <UserListItem
                         key={user._id}
+                        userId={user._id}
                         createdAt={user.createdAt}
                         email={user.email}
                         firstName={user.firstName}
                         lastName={user.lastName}
                         phoneNumber={user.phoneNumber}
+                        onInfoClick={userInfoClickHandler}
                     />
                 ))}
 
