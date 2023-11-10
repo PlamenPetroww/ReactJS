@@ -4,19 +4,23 @@ import * as userService from "../services/userService";
 import CreateUserModal from "./createUserModal";
 import UserInfoModal from "./UserInfoModal";
 import UserDeleteModal from "./UserDeleteModal";
+import Spinner from "./Spinner";
 
 const UserListTable = () => {
   const [users, setUsers] = useState([]);
+  const [isLoading, setisLoading] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
+    setisLoading(true);
     userService
       .getAll()
       .then((result) => setUsers(result))
-      .catch((error) => console.log(error));
+      .catch(error => console.log(error))
+      .finally(() =>setisLoading(false));
   }, []);
 
   const createUserClickHandler = () => {
@@ -86,6 +90,8 @@ const UserListTable = () => {
           onDelete={deleteUserHandler}
         />
       )}
+
+      {isLoading && <Spinner />}
 
       <table className="table">
         <thead>
