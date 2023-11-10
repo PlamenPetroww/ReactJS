@@ -3,12 +3,15 @@ import { useEffect, useState } from "react";
 import * as userService from "../services/userService";
 import CreateUserModal from "./createUserModal";
 import UserInfoModal from "./UserInfoModal";
+import UserDeleteModal from "./UserDeleteModal";
 
 const UserListTable = () => {
 
     const [users, setUsers] = useState([]);
     const [showCreate, setShowCreate] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
 
     useEffect(() => {
         userService.getAll()
@@ -34,11 +37,27 @@ const UserListTable = () => {
 
     };
 
-    const userInfoClickHandler = async (userId) => {
-        const userDetails = await userService.getOne(userId);
-
-        console.log(userDetails);
+    const userInfoClickHandler = async () => {
+        setSelectedUser(userId);
+        setShowInfo(true);
     };
+
+    const deleteUserClickHandler = (userId) => {
+        setSelectedUser(userId);
+        setShowDelete(true);
+    }
+
+    const deleteUserHandler = async () => {
+        // Remove user from server
+        const result = await userService.remove(selectedUser);
+
+        // Remove user from state
+        setUsers(state => state.filter(user => user._id !== selectedUser))
+
+        // Close the delete modal
+        setShowDelete(false);
+    }
+
   return (
     <div className="table-wrapper">
 
@@ -49,7 +68,17 @@ const UserListTable = () => {
               />
              )}
 
-             {showInfo && <UserInfoModal  onClose={() => setShowInfo(false)} />}
+            {showInfo && (
+            <UserInfoModal
+            onClose={() => setShowInfo(false)}
+            userId = {selectedUser}
+             />)}
+
+            {showDelete && (
+            <UserDeleteModal
+            onClose={() => setShowDelete(false)}
+            onDelete={deleteUserHandler}
+            />)}
 
       <table className="table">
         <thead>
@@ -159,6 +188,7 @@ const UserListTable = () => {
                         lastName={user.lastName}
                         phoneNumber={user.phoneNumber}
                         onInfoClick={userInfoClickHandler}
+                        onDeleteClick={deleteUserClickHandler}
                     />
                 ))}
 
