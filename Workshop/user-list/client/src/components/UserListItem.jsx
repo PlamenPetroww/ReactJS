@@ -17,7 +17,7 @@ const UserListItem = ({
 
   const deleteClickHandler = () => {
     onDeleteClick(userId)
-  }
+  };
 
   return (
     <tr>

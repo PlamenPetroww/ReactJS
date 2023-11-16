@@ -40,7 +40,7 @@ const UserListTable = () => {
     setShowCreate(false);
   };
 
-  const userInfoClickHandler = async () => {
+  const userInfoClickHandler = async (userId) => {
     setSelectedUser(userId);
     setShowInfo(true);
   };
