@@ -1,11 +1,11 @@
 import './App.css'
-import UncontrolledForm from './components/UncontrolledForm'
+import ControlledForm from './components/ControledForm'
 
 function App() {
 
   return (
     <>
-        <UncontrolledForm />
+        <ControlledForm />
     </>
   )
 }
