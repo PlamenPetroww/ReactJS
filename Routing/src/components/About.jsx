@@ -1,11 +1,27 @@
-const About = () => {
-    return(
-        <div>
-            <h2>About Page</h2>
+import { Link, Routes, Route } from "react-router-dom";
 
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde alias obcaecati vitae qui, blanditiis magnam incidunt! Alias, autem officiis, iure consequuntur vitae quisquam eum, hic optio dolore enim esse ad.</p>
-        </div>
-    );
+import AboutUs from "./AboutUs";
+import Mission from "./Mission";
+import OurValues from "./OurValues";
+
+const About = () => {
+  return (
+    <>
+      <h2>About Page</h2>
+
+      <nav>
+        <Link to="us">About Us</Link>
+        <Link to="mission">Mission</Link>
+        <Link to="values">Our Values</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/us" element={<AboutUs />} />
+        <Route path="/mission" element={<Mission />} />
+        <Route path="/values" element={<OurValues />} />
+      </Routes>
+    </>
+  );
 };
 
 export default About;
